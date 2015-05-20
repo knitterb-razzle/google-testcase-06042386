@@ -5,7 +5,9 @@ import java.io.RandomAccessFile;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -26,6 +28,9 @@ public class ImageTest {
 	public byte[] workingPngBytes;
 	public byte[] failingPngBytes;
 	
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 	public ImageTest() throws IOException {
 		
 		LocalDatastoreServiceTestConfig helperDatastoreConfig = 
@@ -102,6 +107,10 @@ public class ImageTest {
 		
 		ImageProcess ip=new ImageProcess();
 		ip.processUpload(failingPngBytes, "image.png");
+		
+		// TODO(bk) This shouldn't fail -- but for test case reasons it makes sense that we expect it!!
+		exception.expect(IllegalArgumentException.class);
+		exception.expectMessage("Failed to read image");
 		ip.processSmall("image.png", "image-small.png");
 	}
 	
