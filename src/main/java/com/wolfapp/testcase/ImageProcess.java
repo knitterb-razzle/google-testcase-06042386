@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.Image.Format;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
@@ -26,6 +27,16 @@ public class ImageProcess {
 	public void processUpload(byte[] data, String filename) throws IOException {
 		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		Image img = ImagesServiceFactory.makeImage(data);
+		
+		if (img.getFormat() != Format.PNG) {
+			Transform rotate = ImagesServiceFactory.makeRotate(0);
+			Image newImg = imagesService.applyTransform(rotate, img, OutputEncoding.PNG);
+			img = newImg;
+		}
+		if (img.getFormat() != Format.PNG) {
+			log.severe("Cannot convert to PNG");
+			throw new IOException("Cannot convert to PNG");
+		}
 		
 		if (img.getWidth()>2000 || img.getHeight()>2000) {
 			log.warning("Size "+img.getHeight()+"x"+img.getWidth()+" -> 2000x2000");

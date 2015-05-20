@@ -23,7 +23,8 @@ public class ImageTest {
 
 	protected LocalServiceTestHelper helper;
 
-	public byte[] testPngBytes;
+	public byte[] workingPngBytes;
+	public byte[] failingPngBytes;
 	
 	public ImageTest() throws IOException {
 		
@@ -50,8 +51,13 @@ public class ImageTest {
 		RandomAccessFile f;
 
 		f = new RandomAccessFile("src/test/resources/testPattern.png", "r");
-		testPngBytes = new byte[(int) f.length()];
-		f.read(testPngBytes);
+		workingPngBytes = new byte[(int) f.length()];
+		f.read(workingPngBytes);
+		f.close();
+		
+		f = new RandomAccessFile("src/test/resources/image.png", "r");
+		failingPngBytes = new byte[(int) f.length()];
+		f.read(failingPngBytes);
 		f.close();
 		
 
@@ -75,18 +81,27 @@ public class ImageTest {
 	
 	@Test
 	public void testUpload() throws IOException {
-		assertThat(testPngBytes).isNotNull();
+		assertThat(workingPngBytes).isNotNull();
 		
 		ImageProcess ip=new ImageProcess();
-		ip.processUpload(testPngBytes, "image.png");
+		ip.processUpload(workingPngBytes, "image.png");
 	}
 	
 	@Test
 	public void testReprocess() throws IOException {
-		assertThat(testPngBytes).isNotNull();
+		assertThat(workingPngBytes).isNotNull();
 		
 		ImageProcess ip=new ImageProcess();
-		ip.processUpload(testPngBytes, "image.png");
+		ip.processUpload(workingPngBytes, "image.png");
+		ip.processSmall("image.png", "image-small.png");
+	}
+	
+	@Test
+	public void testReprocessFailure() throws IOException {
+		assertThat(failingPngBytes).isNotNull();
+		
+		ImageProcess ip=new ImageProcess();
+		ip.processUpload(failingPngBytes, "image.png");
 		ip.processSmall("image.png", "image-small.png");
 	}
 	
