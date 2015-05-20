@@ -78,7 +78,16 @@ public class ImageTest {
 		assertThat(testPngBytes).isNotNull();
 		
 		ImageProcess ip=new ImageProcess();
-		ip.processUpload(testPngBytes);
+		ip.processUpload(testPngBytes, "image.png");
+	}
+	
+	@Test
+	public void testReprocess() throws IOException {
+		assertThat(testPngBytes).isNotNull();
+		
+		ImageProcess ip=new ImageProcess();
+		ip.processUpload(testPngBytes, "image.png");
+		ip.processSmall("image.png", "image-small.png");
 	}
 	
 }
