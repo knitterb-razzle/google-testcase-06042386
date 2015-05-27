@@ -108,9 +108,6 @@ public class ImageTest {
 		ImageProcess ip=new ImageProcess();
 		ip.processUpload(failingPngBytes, "image.png");
 		
-		// TODO(bk) This shouldn't fail -- but for test case reasons it makes sense that we expect it!!
-		exception.expect(IllegalArgumentException.class);
-		exception.expectMessage("Failed to read image");
 		ip.processSmall("image.png", "image-small.png");
 	}
 	

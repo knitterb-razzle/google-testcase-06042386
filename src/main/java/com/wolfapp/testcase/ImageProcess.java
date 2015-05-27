@@ -65,7 +65,10 @@ public class ImageProcess {
 		ByteBuffer buf=ByteBuffer.allocate(fileSize);
 		// TODO(bk) this is a blocking call that reads everything into memory, may want to convert this to a stream (for large objects)
 		// https://cloud.google.com/appengine/docs/java/googlecloudstorageclient/getstarted#reading_gcs_data_into_an_object
-		inputChannel.read(buf);
+		int read=0;
+		do {
+			read=inputChannel.read(buf);
+		} while (read>0);
 		inputChannel.close();
 		byte[] data = buf.array();
 
